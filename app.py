@@ -6,7 +6,7 @@
 
 from flask import Flask, jsonify, request
 from flask_cors import CORS, cross_origin
-import cv2
+# import cv2
 import numpy as np
 import pandas as pd
 from uuid import uuid4
