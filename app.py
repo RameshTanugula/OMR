@@ -6,7 +6,7 @@
 
 from flask import Flask, jsonify, request
 from flask_cors import CORS, cross_origin
-# import cv2
+import cv2
 import numpy as np
 import pandas as pd
 from uuid import uuid4
@@ -110,6 +110,7 @@ def submit_omr():
     return {"Rollno_matched":k,"TestId_matched":h,"Answered":bubbled,"Key":key,"Total_marks":total,"Total_worng":worng,"Count_None_values":none_count}
 #     return jsonify({"message":"successful"})
 
-if __name__ == '_main_':
-    app.run(host='0.0.0.0', port=80)
-
+# if __name__ == '_main_':
+#     app.run(host='0.0.0.0', port=80)
+if __name__ == '__main__':
+   app.run(debug = True)
