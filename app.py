@@ -28,7 +28,7 @@ def submit_omr():
     key = data['key']
     test_id1 = data['testId']
     roll_no = data['rollNo']
-    image = io.imread('files/5.jpg')
+    image = io.imread(file)
     d=find_paper(image)
     def answers():
         q1=d[440:1245,55:185]
