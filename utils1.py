@@ -1,24 +1,22 @@
 #!/usr/bin/env python
 # coding: utf-8
-# %%
+
+# In[ ]:
 
 
 import cv2
 import numpy as np
 
-from uuid import uuid4
-
 def biggest_contour(contours):
-    
     biggest = np.array([])
     max_area = 0
     
     for contour in contours:
-        
+
         area = cv2.contourArea(contour)
         
         if area > 1000:
-            
+
             peri = cv2.arcLength(contour, True)
             approx = cv2.approxPolyDP(contour, 0.015 * peri, True)
             
@@ -30,9 +28,9 @@ def biggest_contour(contours):
 
 
 def find_paper(image):
-    
+
     '''
-        Find an answer sheet in the image and auto cropped
+    Find an answer sheet in the image and auto crop it
     '''
     
     # define readed answersheet image output size
@@ -41,7 +39,7 @@ def find_paper(image):
     img_original = image.copy()
     
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    gray = cv2.bilateralFilter(gray, 20, 30, 30)
+    gray = cv2.bilateralFilter(gray, 10, 75, 75)  # Add bilateral filtering to reduce noise
     edged = cv2.Canny(gray, 10, 20)
 
     (contours, _) = cv2.findContours(edged.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
@@ -73,51 +71,39 @@ def find_paper(image):
     return img_output
 
 
-# %%
-
-
-def read_answer(roi,debug: bool = True) :
+def read_answer(roi, debug=True):
+    '''
+    Read answer marks from a specific region of the answer sheet and return the results as a list.
+    '''
+    n_questions = 10
     
-    '''
-        Read answer mark from a specific region of the answer sheet and return a result as a list.
-    '''
-    n_questions=10
     grey = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
-    inp = cv2.GaussianBlur(grey, ksize = (15, 15), sigmaX = 1)
+    blurred = cv2.GaussianBlur(grey, (3, 3), 0)  # Apply Gaussian blur to reduce noise
+    (_, res) = cv2.threshold(blurred, 185, 255, cv2.THRESH_BINARY)
 
-    (_, res) = cv2.threshold(inp, 185, 255, cv2.THRESH_BINARY)
+    res = cv2.morphologyEx(res, cv2.MORPH_CLOSE, np.ones((3, 3), np.uint8), iterations=3)
+    res = cv2.dilate(res, (3, 3), iterations=1)
 
-    res = cv2.morphologyEx(res, cv2.MORPH_CLOSE, np.ones((3, 3), dtype = np.uint8), iterations = 3)
-    res = cv2.dilate(res, kernel = (3, 3))
-    
     if debug:
         pass
-#         cv2.imshow(str(uuid4()), res)
+#         cv2.imshow("Thresholded", res)
 #         cv2.waitKey(0)
 
     (contours, _) = cv2.findContours(res, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
 
     readed = []
-
     for cnt in contours[1:][::-1]:
-        
-        (x, y, _w, _h) = cv2.boundingRect(cnt)
-        
-        if debug:
-            pass
-             #print(x, y)
-        
-        if x in range(0, 34):
-            readed.append((int(y // 80) + 1, 1))
-            
-        elif x in range(34, 68):
-            readed.append((int(y // 80) + 1, 2))
-            
-        elif x in range(68, 102):
-            readed.append((int(y // 80) + 1, 3))
-            
-        elif x in range(102, 132):
-            readed.append((int(y // 80) + 1, 4))
+        (x, y, w, h) = cv2.boundingRect(cnt)
+        if w > 10 and h > 10:  # Filter out small contours
+            if x in range(0, 32):
+                readed.append((int(y // 80) + 1, 1))
+            elif x in range(34, 67):
+                readed.append((int(y // 80) + 1, 2))
+            elif x in range(68, 99):
+                readed.append((int(y // 80) + 1, 3))
+            elif x in range(100, 132):
+                readed.append((int(y // 80) + 1, 4))
+    
     idx1=0
     for t1 in readed:
         for t2 in readed:
@@ -132,69 +118,51 @@ def read_answer(roi,debug: bool = True) :
     for (n, choice) in readed:
         read[n - 1] = choice
     
-    return read   
+    return read
 
 
-# %%
 
 
-def id_read(image, debug: bool = True):
-    
+def id_read(image, debug=True):
     '''
-        Read the ID from the id section of the answer sheet image
+    Read the ID from the ID section of the answer sheet image
     '''
-    
     img = image
     
     grey = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    inp = cv2.GaussianBlur(grey, ksize = (3, 3), sigmaX = 1)
+    blurred = cv2.GaussianBlur(grey, (3, 3), 0)  # Apply Gaussian blur to reduce noise
+    (_, res) = cv2.threshold(blurred, 178, 255, cv2.THRESH_BINARY)
 
-    (_, res) = cv2.threshold(inp, 178, 255, cv2.THRESH_BINARY)
-
-    res = cv2.morphologyEx(res, cv2.MORPH_CLOSE, np.ones((3, 3), dtype = np.uint8), iterations = 4)
-    res = cv2.dilate(res, kernel = (5, 5), iterations = 3)
+    res = cv2.morphologyEx(res, cv2.MORPH_CLOSE, np.ones((3, 3), np.uint8), iterations=4)
+    res = cv2.dilate(res, (5, 5), iterations=3)
 
     Id = []
-    
     (contours, _) = cv2.findContours(res, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
         
-    for cnt in (contours[1:][::-1]):
+    for cnt in contours[1:][::-1]:
         (x, y, w, h) = cv2.boundingRect(cnt)
-            
-        if debug:
-            pass
-            #print(y)
-            
-        if y in range(0, 26):
-            Id.append(0)
-            
-        elif y in range(26, 52):
-            Id.append(1)
-                
-        elif y in range(52,78):
-            Id.append(2)
-                
-        elif y in range(78, 104):
-            Id.append(3)
-                
-        elif y in range(104,130):
-            Id.append(4)
-                
-        elif y in range(130,156):
-            Id.append(5)
-                
-        elif y in range(156,182):
-            Id.append(6)
-            
-        elif y in range(182, 208):
-            Id.append(7)
-                
-        elif y in range(208, 234):
-            Id.append(8)
-                
-        elif y in range(234,260):
-            Id.append(9)
-       
+        if w > 10 and h > 10:  # Filter out small contours
+            if y in range(0, 26):
+                Id.append(0)
+            elif y in range(26, 52):
+                Id.append(1)
+            elif y in range(52, 78):
+                Id.append(2)
+            elif y in range(78, 104):
+                Id.append(3)
+            elif y in range(104, 130):
+                Id.append(4)
+            elif y in range(130, 156):
+                Id.append(5)
+            elif y in range(156, 182):
+                Id.append(6)
+            elif y in range(182, 208):
+                Id.append(7)
+            elif y in range(208, 234):
+                Id.append(8)
+            elif y in range(234, 260):
+                Id.append(9)
     
-    return (Id)
+    return Id
+
 

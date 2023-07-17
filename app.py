@@ -28,14 +28,14 @@ def submit_omr():
     key = data['key']
     test_id1 = data['testId']
     roll_no = data['rollNo']
-    image = io.imread(file)
+    image = io.imread('files/5.jpg')
     d=find_paper(image)
     def answers():
-        q1=d[440:1240,55:190]
+        q1=d[440:1245,55:185]
         q2=d[440:1240,255:390]
         q3=d[440:1240,455:590]
-        q4=d[440:1240,655:790]
-        q5=d[440:1240,855:990]
+        q4=d[438:1240,655:790]
+        q5=d[435:1240,855:990]
 
         s1=read_answer(q1) 
         s2=read_answer(q2)
@@ -45,17 +45,16 @@ def submit_omr():
         final=s1+s2+s3+s4+s5
         return final
     def s_id_reader():
-        std_1=d[80:345,20:38]
-        std_2=d[80:345,43:63]
-        std_3=d[80:345,66:88]
-        std_4=d[80:345,92:111]
-        std_5=d[80:345,117:136]
-        std_6=d[80:345,142:161]
-        std_7=d[80:345,167:185]
-        std_8=d[80:345,191:210]
-        std_9=d[80:345,215:234]
-        std_10=d[80:345,239:258]
-
+        std_1=d[75:345,15:40]
+        std_2=d[75:345,41:65]
+        std_3=d[75:345,66:90]
+        std_4=d[75:345,91:115]
+        std_5=d[75:345,116:140]
+        std_6=d[75:345,141:165]
+        std_7=d[75:345,166:190]
+        std_8=d[75:345,185:215]
+        std_9=d[75:345,210:240]
+        std_10=d[75:345,235:265]
         st_1=id_read(std_1) 
         st_2=id_read(std_2)
         st_3=id_read(std_3)
@@ -69,9 +68,9 @@ def submit_omr():
         student_Id=st_1+st_2+st_3+st_4+st_5+st_6+st_7+st_8+st_9+st_10
         return student_Id
     def t_id_reader():
-        t_id_1=d[80:345,287:306]
-        t_id_2=d[80:345,315:336]
-        t_id_3=d[80:345,344:365]
+        t_id_1=d[80:345,280:310]
+        t_id_2=d[80:345,311:340]
+        t_id_3=d[80:345,341:370]
         t_1=id_read(t_id_1) 
         t_2=id_read(t_id_2)
         t_3=id_read(t_id_3)
@@ -110,7 +109,9 @@ def submit_omr():
     return {"Rollno_matched":k,"TestId_matched":h,"Answered":bubbled,"Key":key,"Total_marks":total,"Total_worng":worng,"Count_None_values":none_count}
 #     return jsonify({"message":"successful"})
 
-# if __name__ == '_main_':
+# if __name__ == '__main__':
 #     app.run(host='0.0.0.0', port=80)
+
+
 if __name__ == '__main__':
    app.run(debug = True)
