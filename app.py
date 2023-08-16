@@ -22,9 +22,9 @@ cors = CORS(app, resources={r"/foo": {"origins": "http://localhost:port"}})
 @app.route('/submit', methods=['GET', 'POST'])
 @cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
 def submit_omr():
-    data = request.get_json()
+    data = request.form
     print(data)
-    file = data['file']
+    file = request.files['file']
     key = data['key']
     test_id1 = data['testId']
     roll_no = data['rollNo']
