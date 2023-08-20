@@ -45,16 +45,16 @@ def submit_omr():
         final=s1+s2+s3+s4+s5
         return final
     def s_id_reader():
-        std_1=d[75:345,15:40]
-        std_2=d[75:345,41:65]
-        std_3=d[75:345,66:90]
-        std_4=d[75:345,91:115]
-        std_5=d[75:345,116:140]
-        std_6=d[75:345,141:165]
-        std_7=d[75:345,166:190]
-        std_8=d[75:345,185:215]
-        std_9=d[75:345,210:240]
-        std_10=d[75:345,235:265]
+        std_1=d[75:350,12:34]
+        std_2=d[75:350,36:58]
+        std_3=d[75:350,62:84]
+        std_4=d[75:350,88:110]
+        std_5=d[75:350,112:134]
+        std_6=d[75:350,136:158]
+        std_7=d[75:350,160:182]
+        std_8=d[75:350,186:208]
+        std_9=d[75:350,210:232]
+        std_10=d[75:350,234:256]
         st_1=id_read(std_1) 
         st_2=id_read(std_2)
         st_3=id_read(std_3)
@@ -68,9 +68,9 @@ def submit_omr():
         student_Id=st_1+st_2+st_3+st_4+st_5+st_6+st_7+st_8+st_9+st_10
         return student_Id
     def t_id_reader():
-        t_id_1=d[80:345,280:310]
-        t_id_2=d[80:345,311:340]
-        t_id_3=d[80:345,341:370]
+        t_id_1=d[75:350,282:304]
+        t_id_2=d[75:350,312:334]
+        t_id_3=d[75:350,342:364]
         t_1=id_read(t_id_1) 
         t_2=id_read(t_id_2)
         t_3=id_read(t_id_3)
@@ -103,7 +103,9 @@ def submit_omr():
             marks += 1
     total=marks
     none_count = len([x for x in bubbled if x is None])
-    worng=100-total-none_count
+    worng=50-total-none_count
+    student_id = ''.join(map(str, student_id))
+    test_id = ''.join(map(str, test_id))
     k=(student_id==roll_no)
     h=(test_id==test_id1)
     return {"Rollno_matched":k,"TestId_matched":h,"Answered":bubbled,"Key":key,"Total_marks":total,"Total_worng":worng,"Count_None_values":none_count}
