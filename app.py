@@ -25,6 +25,7 @@ def submit_omr():
     data = request.form
     print(data)
     file = request.files['file']
+    # file = open('./files/111.jpeg')
     key = data['key']
     test_id1 = data['testId']
     roll_no = data['rollNo']
@@ -45,16 +46,16 @@ def submit_omr():
         final=s1+s2+s3+s4+s5
         return final
     def s_id_reader():
-        std_1=d[75:350,12:34]
-        std_2=d[75:350,36:58]
-        std_3=d[75:350,62:84]
-        std_4=d[75:350,88:110]
-        std_5=d[75:350,112:134]
-        std_6=d[75:350,136:158]
-        std_7=d[75:350,160:182]
-        std_8=d[75:350,186:208]
-        std_9=d[75:350,210:232]
-        std_10=d[75:350,234:256]
+        std_1=d[70:350,10:38]
+        std_2=d[70:350,38:63]
+        std_3=d[70:350,63:88]
+        std_4=d[70:350,88:111]
+        std_5=d[70:350,111:136]
+        std_6=d[70:350,136:161]
+        std_7=d[70:350,161:185]
+        std_8=d[70:350,185:210]
+        std_9=d[70:350,210:234]
+        std_10=d[70:350,234:258]
         st_1=id_read(std_1) 
         st_2=id_read(std_2)
         st_3=id_read(std_3)
@@ -68,9 +69,9 @@ def submit_omr():
         student_Id=st_1+st_2+st_3+st_4+st_5+st_6+st_7+st_8+st_9+st_10
         return student_Id
     def t_id_reader():
-        t_id_1=d[75:350,282:304]
-        t_id_2=d[75:350,312:334]
-        t_id_3=d[75:350,342:364]
+        t_id_1=d[75:355,280:306]
+        t_id_2=d[75:355,306:336]
+        t_id_3=d[75:355,336:365]
         t_1=id_read(t_id_1) 
         t_2=id_read(t_id_2)
         t_3=id_read(t_id_3)
