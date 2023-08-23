@@ -12,3 +12,5 @@ to start app in EC2
 pip3 install gunicorn
 nohup gunicorn -b 0.0.0.0:8000 app:app
 
+netstat -aWn --programs | grep 80
+
